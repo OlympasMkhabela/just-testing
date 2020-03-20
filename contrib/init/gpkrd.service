@@ -1,0 +1,26 @@
+[Unit]
+Description=Lega's distributed currency daemon
+After=network.target
+
+[Service]
+User=lega
+Group=lega
+
+Type=forking
+PIDFile=/var/lib/legad/legad.pid
+
+ExecStart=/usr/bin/legad -daemon -pid=/var/lib/legad/legad.pid \
+          -conf=/etc/lega/lega.conf -datadir=/var/lib/legad
+
+ExecStop=-/usr/bin/lega-cli -conf=/etc/lega/lega.conf \
+         -datadir=/var/lib/legad stop
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
